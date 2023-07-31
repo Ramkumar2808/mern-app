@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
 
-import User from "../database/models/userModel.js";
+import User from "../database/models/UserModel.js";
 import generateAuthToken from "../utils/generateAuthToken.js";
 import transporter from "../config/mailConfig.js";
 import PasswordResetToken from "../database/models/ResetPasswordTokenModel.js";
@@ -32,7 +32,7 @@ export const login = async (req, res, next) => {
       // httpOnly: true,
       secure: process.env.NODE_ENV !== "development", // Use secure cookies in production
       sameSite: "strict", // Prevent CSRF attacks
-      maxAge: 3000, // 1 Hour
+      maxAge: 60 * 60 * 1000, // 1 Hour
       // maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 

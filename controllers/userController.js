@@ -1,9 +1,9 @@
-import User from "../database/models/userModel.js";
+import User from "../database/models/UserModel.js";
 
 // Create a new user
 export const createUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if a user with the provided email already exists
     // const existingUser = await User.findOne({ email });
@@ -17,6 +17,7 @@ export const createUser = async (req, res, next) => {
       name,
       email,
       password,
+      role,
     });
 
     // Save the user to the database
@@ -74,7 +75,7 @@ export const getSingleUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, email } = req.body;
+    const { name, email, role } = req.body;
 
     // Find the user by the provided ID
     const user = await User.findById(id);
@@ -86,6 +87,7 @@ export const updateUser = async (req, res, next) => {
     // Update the user's name and email
     user.name = name;
     user.email = email;
+    user.role = role;
 
     // Save the updated user to the database
     await user.save();

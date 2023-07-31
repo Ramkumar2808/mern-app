@@ -23,6 +23,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      required: true,
+      enum: ["super_admin", "admin", "lead", "coder", "auditor"],
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ["active", "inactive"],
+      default: "inactive",
+    },
+
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
   },
   { timestamps: true }
 );
@@ -37,6 +53,21 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const User = mongoose.model("User", userSchema);
+// Pre-save hook to check if the user is already assigned to a team
+// userSchema.pre("save", async function (next) {
+//   if (this.isModified("team")) {
+//     // Check if the user already belongs to a team
+//     const existingUser = await this.constructor.findOne({ team: this.team });
+
+//     if (existingUser && !this._id.equals(existingUser._id)) {
+//       const err = new Error("User is already assigned to another team");
+//       return next(err);
+//     }
+//   }
+
+//   next();
+// });
+
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
