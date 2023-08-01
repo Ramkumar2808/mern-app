@@ -10,8 +10,11 @@ import "dotenv/config";
 import connectDB from "./config/connectDB.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
+import clientRoutes from "./routes/client/clientRoutes.js";
+import projectRoutes from "./routes/project/projectRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
+import { authorizeRoles, protect } from "./middlewares/authMiddleware.js";
 
 connectDB();
 
@@ -29,6 +32,11 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
+
+// Allow access only to users with roles 'superadmin'
+app.use("/api/clients", protect, authorizeRoles("super_admin"), clientRoutes);
+app.use("/api/projects", protect, authorizeRoles("super_admin"), projectRoutes);
+
 app.use("/api/users", userRoutes);
 
 // Getting the filename and the directory name of the current module

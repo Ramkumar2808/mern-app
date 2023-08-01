@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../database/models/userModel.js";
+import User from "../database/models/UserModel.js";
 
 const protect = (req, res, next) => {
   const token = req.cookies.jwt;
@@ -28,4 +28,15 @@ const protect = (req, res, next) => {
   }
 };
 
-export { protect };
+const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "You do not have the required role to access this resource.",
+      });
+    }
+    next();
+  };
+};
+
+export { protect, authorizeRoles };

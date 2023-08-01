@@ -30,6 +30,29 @@ export const createUser = async (req, res, next) => {
 };
 
 // Get all users
+// export const getAllUsers = async (req, res, next) => {
+//   const page = parseInt(req.query.page) || 1;
+//   const pageSize = parseInt(req.query.pageSize) || 10;
+//   try {
+//     // Calculate the skip value to skip the appropriate number of documents
+//     const skip = (page - 1) * pageSize;
+
+//     // Retrieve all users from the database
+//     const users = await User.find()
+//       .select("-password")
+//       .skip(skip)
+//       .limit(pageSize);
+
+//     // Fetch the total number of users for calculating total pages
+//     const totalCount = await User.countDocuments();
+//     const totalPages = Math.ceil(totalCount / pageSize);
+
+//     res.status(200).json({ users, totalCount, totalPages });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 export const getAllUsers = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
@@ -37,14 +60,16 @@ export const getAllUsers = async (req, res, next) => {
     // Calculate the skip value to skip the appropriate number of documents
     const skip = (page - 1) * pageSize;
 
-    // Retrieve all users from the database
-    const users = await User.find()
-      .select("-password")
-      .skip(skip)
-      .limit(pageSize);
+    // Use the aggregation pipeline to fetch paginated users and total count in a single query
+    const [users, totalCount] = await Promise.all([
+      User.aggregate([
+        { $project: { password: 0 } }, // Exclude the password field
+        { $skip: skip },
+        { $limit: pageSize },
+      ]),
+      User.countDocuments(),
+    ]);
 
-    // Fetch the total number of users for calculating total pages
-    const totalCount = await User.countDocuments();
     const totalPages = Math.ceil(totalCount / pageSize);
 
     res.status(200).json({ users, totalCount, totalPages });
