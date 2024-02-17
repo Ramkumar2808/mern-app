@@ -2,14 +2,30 @@
   "version": 2,
   "builds": [
     {
-      "src": "./app.js",
+      "src": "app.js", // Specify the entry point of your Express app
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/"
+      "src": "/api/auth/(.*)", // Route for authentication API endpoints
+      "dest": "/api/auth/$1" // Redirect API requests to the corresponding route in app.js
+    },
+    {
+      "src": "/api/clients/(.*)", // Route for client API endpoints
+      "dest": "/api/clients/$1" // Redirect API requests to the corresponding route in app.js
+    },
+    {
+      "src": "/api/projects/(.*)", // Route for project API endpoints
+      "dest": "/api/projects/$1" // Redirect API requests to the corresponding route in app.js
+    },
+    {
+      "src": "/api/users/(.*)", // Route for user API endpoints
+      "dest": "/api/users/$1" // Redirect API requests to the corresponding route in app.js
+    },
+    {
+      "src": "/(.*)", // Catch-all route for all other requests
+      "dest": "/app.js" // Redirect all other requests to app.js
     }
   ]
 }
