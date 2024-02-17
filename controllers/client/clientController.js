@@ -22,11 +22,27 @@ export const createClient = async (req, res, next) => {
 
 // *Get all clients
 export const getAllClients = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
   try {
+    // Calculate the skip value to skip the appropriate number of documents
+    const skip = (page - 1) * pageSize;
     // Retrieve all clients from the database
-    const clients = await Client.find().sort({ createdAt: -1 });
+    // const clients = await Client.find().sort({ createdAt: -1 });
 
-    res.status(200).json(clients);
+    // Use the aggregation pipeline to fetch paginated clients and total count in a single query
+    const [clients, totalCount] = await Promise.all([
+      Client.aggregate([
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: pageSize },
+      ]),
+      Client.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    res.status(200).json({ clients, totalCount, totalPages });
   } catch (error) {
     next(error);
   }

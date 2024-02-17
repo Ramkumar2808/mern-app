@@ -1,28 +1,59 @@
-import mongoose from "mongoose";
+// // seeder.js
+// const faker = require("faker");
+// const mongoose = require("mongoose");
 
-import User from "../models/userModel.js";
+// // Replace <your-mongodb-connection-string> with your actual MongoDB connection string
+// mongoose.connect(procees, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
-export const seedDataForUsers = async () => {
-  try {
-    // Define the data you want to seed
-    const usersData = [
-      { name: "John Doe", email: "johndoe@example.com", password: "password" },
-      {
-        name: "Jane Smith",
-        email: "janesmith@example.com",
-        password: "password",
-      },
-      // Add more user objects as needed
-    ];
+// // Define a user schema and model
+// const userSchema = new mongoose.Schema({
+//   firstName: String,
+//   lastName: String,
+//   email: String,
+//   username: String,
+//   password: String,
+//   role: String, // New field for the user's role
+// });
 
-    // Insert the seed data into the "users" collection using a Mongoose model
+// const User = mongoose.model("User", userSchema);
 
-    await User.insertMany(usersData);
+// // Array of predefined roles
+// const roles = ["admin", "user", "manager", "guest"];
 
-    console.log("Seed data inserted successfully");
-  } catch (error) {
-    console.error("Seeder error:", error);
-  } finally {
-    mongoose.disconnect();
-  }
-};
+// // Function to generate random user data using Faker, including a random role
+// const generateRandomUserData = () => {
+//   return {
+//     firstName: faker.name.firstName(),
+//     lastName: faker.name.lastName(),
+//     email: faker.internet.email(),
+//     username: faker.internet.userName(),
+//     password: faker.internet.password(),
+//     role: roles[Math.floor(Math.random() * roles.length)], // Pick a random role from the roles array
+//   };
+// };
+
+// // Function to seed the database with fake users
+// const seedUsers = async (numUsers) => {
+//   try {
+//     await User.deleteMany(); // Clear existing users from the database
+
+//     const users = [];
+//     for (let i = 0; i < numUsers; i++) {
+//       users.push(generateRandomUserData());
+//     }
+
+//     await User.create(users); // Insert the new fake users into the database
+//     console.log(`${numUsers} users seeded successfully.`);
+//   } catch (error) {
+//     console.error("Error seeding users:", error);
+//   } finally {
+//     mongoose.disconnect(); // Close the MongoDB connection when done
+//   }
+// };
+
+// // Call the seedUsers function with the desired number of fake users
+// const numberOfFakeUsers = 10; // Change this to the number of fake users you want to generate
+// seedUsers(numberOfFakeUsers);

@@ -34,7 +34,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 
 // Allow access only to users with roles 'superadmin'
-app.use("/api/clients", protect, authorizeRoles("super_admin"), clientRoutes);
+// app.use("/api/clients", protect, authorizeRoles("super_admin"), clientRoutes);
+app.use("/api/clients", clientRoutes);
 app.use("/api/projects", protect, authorizeRoles("super_admin"), projectRoutes);
 
 app.use("/api/users", userRoutes);
@@ -56,6 +57,7 @@ const __dirname = dirname(__filename);
 //       res.send('API is running....');
 //     });
 //   }
+
 app.use(express.static(`${__dirname}/public`));
 
 // Error handlers

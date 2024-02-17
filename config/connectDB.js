@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { dbSeed } from "../database/seeders/databaseSeeder.js";
+// import { dbSeed } from "../database/seeders/databaseSeeder.js";
 
 const connectDB = async () => {
   try {

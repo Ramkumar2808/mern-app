@@ -64,6 +64,7 @@ export const getAllUsers = async (req, res, next) => {
     const [users, totalCount] = await Promise.all([
       User.aggregate([
         { $project: { password: 0 } }, // Exclude the password field
+        { $sort: { createdAt: -1 } },
         { $skip: skip },
         { $limit: pageSize },
       ]),
