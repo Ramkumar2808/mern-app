@@ -8,22 +8,6 @@
   ],
   "routes": [
     {
-      "src": "/api/auth/(.*)", 
-      "dest": "/api/auth/$1" 
-    },
-    {
-      "src": "/api/clients/(.*)", 
-      "dest": "/api/clients/$1" 
-    },
-    {
-      "src": "/api/projects/(.*)", 
-      "dest": "/api/projects/$1" 
-    },
-    {
-      "src": "/api/users/(.*)", 
-      "dest": "/api/users/$1" 
-    },
-    {
       "src": "/(.*)", 
       "dest": "/app.js" 
     }
