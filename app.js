@@ -60,6 +60,10 @@ const __dirname = dirname(__filename);
 
 app.use(express.static(`${__dirname}/public`));
 
+app.get("/test", (req, res) => {
+  res.send("API is running....");
+});
+
 // Error handlers
 app.use(notFound);
 app.use(errorHandler);
