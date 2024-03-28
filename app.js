@@ -41,8 +41,8 @@ app.use("/api/projects", protect, authorizeRoles("super_admin"), projectRoutes);
 app.use("/api/users", userRoutes);
 
 // Getting the filename and the directory name of the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 // Serving static files from the `public` directory
 // if (process.env.NODE_ENV === 'production') {
@@ -58,9 +58,9 @@ const __dirname = dirname(__filename);
 //     });
 //   }
 
-app.use(express.static(`${__dirname}/public`));
+// app.use(express.static(`${__dirname}/public`));
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.send("API is running....");
 });
 
