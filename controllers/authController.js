@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
+import speakeasy from "speakeasy";
+import qrcode from "qrcode";
 
 import User from "../database/models/UserModel.js";
 import generateAuthToken from "../utils/generateAuthToken.js";
 import transporter from "../config/mailConfig.js";
 import PasswordResetToken from "../database/models/ResetPasswordTokenModel.js";
+import { generateTOTP, validateTOTP } from "../utils/totpUtils.js";
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -57,6 +60,64 @@ export const login = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "Login successful", user: userWithoutPassword });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const generateQRCode = async (req, res, next) => {
+  try {
+    // Generate a secret for the user
+    const secret = speakeasy.generateSecret();
+
+    // Generate an OTP Auth URL
+    const otpAuthUrl = speakeasy.otpauthURL({
+      secret: secret.ascii,
+      label: "Your App Name",
+      issuer: "Your Company",
+      encoding: "base32",
+    });
+
+    // Generate a QR code for the OTP Auth URL
+    qrcode.toDataURL(otpAuthUrl, (err, dataUrl) => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to generate QR code" });
+      }
+      res.status(200).json({ secret: secret.ascii, qrCode: dataUrl });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller method for generating TOTP code
+export const generateTOTPCode = async (req, res, next) => {
+  try {
+    const { secret } = req.body;
+
+    // Generate the TOTP code using the secret
+    const totpCode = generateTOTP(secret);
+
+    // Send the TOTP code to the client
+    res.status(200).json({ totpCode });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller method for validating TOTP code
+export const validateTOTPCode = async (req, res, next) => {
+  try {
+    const { secret, token } = req.body;
+
+    // Validate the TOTP code against the secret
+    const isValid = validateTOTP(secret, token);
+
+    if (isValid) {
+      res.status(200).json({ message: "TOTP code is valid" });
+    } else {
+      res.status(400).json({ message: "Invalid TOTP code" });
+    }
   } catch (error) {
     next(error);
   }
